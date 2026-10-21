@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101010">
+  <title>Dibala Video</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #101010;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      background: #101010;
+      z-index: 5;
+    }
+    .logo { font-size: 25px; font-weight: 800; }
+    .logo span { color: #ff3155; }
+    button {
+      border: 0;
+      border-radius: 22px;
+      padding: 12px 16px;
+      background: #ff3155;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    main { max-width: 650px; margin: auto; padding: 16px; }
+    .intro { color: #bbb; line-height: 1.5; }
+    .upload {
+      padding: 16px;
+      border: 1px solid #444;
+      border-radius: 16px;
+      margin: 18px 0;
+    }
+    input { max-width: 100%; margin: 10px 0; }
+    .video-card {
+      overflow: hidden;
+      border: 1px solid #333;
+      border-radius: 18px;
+      margin: 18px 0;
+      background: #1b1b1b;
+    }
+    video { width: 100%; max-height: 65vh; display: block; background: #000; }
+    .details { padding: 14px; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .secondary { background: #333; }
+    .notice { color: #aaa; font-size: 13px; line-height: 1.5; }
+    footer { text-align: center; color: #888; padding: 25px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Dibala<span>Video</span></div>
+    <button onclick="document.getElementById('videoFile').click()">＋ Upload</button>
+  </header>
+
+  <main>
+    <h1>Videos for everyone.</h1>
+    <p class="intro">Discover videos, share your creativity, and connect with your community.</p>
+
+    <section class="upload">
+      <h2>Share a video</h2>
+      <p class="notice">Choose a video from your phone to preview it here.</p>
+      <input id="videoFile" type="file" accept="video/*">
+      <p><button onclick="uploadVideo()">Preview video</button></p>
+      <p class="notice">First prototype: videos are only previewed on this device. Online uploads and user accounts are not connected yet.</p>
+    </section>
+
+    <h2>Your video feed</h2>
+    <div id="feed">
+      <article class="video-card">
+        <video controls playsinline preload="metadata"
+          poster="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800">
+          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+        </video>
+        <div class="details">
+          <strong>Welcome to Dibala Video 🌍</strong>
+          <p class="notice">A sample video to show how the feed works.</p>
+          <div class="actions">
+            <button class="secondary" onclick="likeVideo(this)">♡ Like <span>0</span></button>
+            <button class="secondary" onclick="alert('Comments will be added in a future version.')">Comment</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>Dibala Video © 2026 · Made for creators</footer>
+
+  <script>
+    function likeVideo(button) {
+      const count = button.querySelector('span');
+      const liked = button.dataset.liked === 'true';
+      button.dataset.liked = String(!liked);
+      count.textContent = Number(count.textContent) + (liked ? -1 : 1);
+      button.firstChild.textContent = liked ? '♡ Like ' : '♥ Liked ';
+    }
+
+    function uploadVideo() {
+      const file = document.getElementById('videoFile').files[0];
+      if (!file) {
+        alert('Please choose a video first.');
+        return;
+      }
+      if (!file.type.startsWith('video/')) {
+        alert('Please choose a valid video file.');
+        return;
+      }
+
+      const url = URL.createObjectURL(file);
+      const card = document.createElement('article');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <video controls playsinline></video>
+        <div class="details">
+          <strong></strong>
+          <p class="notice">Your local preview</p>
+          <div class="actions">
+            <button class="secondary" onclick="likeVideo(this)">♡ Like <span>0</span></button>
+          </div>
+        </div>`;
+      card.querySelector('video').src = url;
+      card.querySelector('strong').textContent = file.name;
+      document.getElementById('feed').prepend(card);
+      card.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
